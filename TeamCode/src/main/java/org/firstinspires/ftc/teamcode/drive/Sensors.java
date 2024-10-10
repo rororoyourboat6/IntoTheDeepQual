@@ -13,7 +13,7 @@ public class Sensors {
     /** Hardware/Constants */
 
     private  DistanceSensor backDistanceSensor;
-    private ColorSensor intakeFrontColor;
+    private static ColorSensor intakeFrontColor;
 
     
     public enum SAMPLE_COLOR {
@@ -33,19 +33,19 @@ public class Sensors {
 
     /** Sensor Functions */
 
-    public double getIntakeFrontAlpha() {
+    public static double getIntakeFrontAlpha() {
         return intakeFrontColor.alpha();
     }
     
-    public double getIntakeFrontArgb() {
+    public static double getIntakeFrontArgb() {
         return intakeFrontColor.argb();
     }
 
-    public double getIntakeFrontRed() {
+    public static double getIntakeFrontRed() {
         return intakeFrontColor.red();
     }
 
-    public double getIntakeFrontGreen() {
+    public static double getIntakeFrontGreen() {
         return intakeFrontColor.green();
     }
 
