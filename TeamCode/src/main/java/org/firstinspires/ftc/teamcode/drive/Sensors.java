@@ -25,7 +25,7 @@ public class Sensors {
 
     public Sensors(HardwareMap hardwareMap) {
         // Distance Sensor facing the front of the robot
-        backDistanceSensor = hardwareMap.get(DistanceSensor.class, "backDistanceSensor");
+//        backDistanceSensor = hardwareMap.get(DistanceSensor.class, "backDistanceSensor");
         // Color sensor looking in the Intake Box
         intakeFrontColor = hardwareMap.get(ColorSensor.class, "intakeColor");
     }
@@ -47,6 +47,10 @@ public class Sensors {
 
     public static double getIntakeFrontGreen() {
         return intakeFrontColor.green();
+    }
+
+    public static double getIntakeFrontBlue(){
+        return intakeFrontColor.blue();
     }
 
 //    public SAMPLE_COLOR getIntakeColor() {
