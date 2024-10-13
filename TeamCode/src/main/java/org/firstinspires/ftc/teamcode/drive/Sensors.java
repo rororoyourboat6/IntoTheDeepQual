@@ -14,8 +14,9 @@ public class Sensors {
 
     private  DistanceSensor backDistanceSensor;
     private static ColorSensor intakeFrontColor;
+    private static DistanceSensor intakeFrontDistance;
 
-    
+
     public enum SAMPLE_COLOR {
         YELLOW,
         RED,
@@ -28,6 +29,7 @@ public class Sensors {
 //        backDistanceSensor = hardwareMap.get(DistanceSensor.class, "backDistanceSensor");
         // Color sensor looking in the Intake Box
         intakeFrontColor = hardwareMap.get(ColorSensor.class, "intakeColor");
+        intakeFrontDistance = hardwareMap.get(DistanceSensor.class, "intakeColor");
     }
     
 
@@ -53,18 +55,33 @@ public class Sensors {
         return intakeFrontColor.blue();
     }
 
-//    public SAMPLE_COLOR getIntakeColor() {
-//        SAMPLE_COLOR color = SAMPLE_COLOR.WHITE;
-//
-//        return color;
-//    }
+    public static double getDistanceColor(){
+        return intakeFrontDistance.getDistance(DistanceUnit.MM);
+    }
+
+//jank but it distinguished blue and red! just not yellow or unknown buttttttttt
+    public static SAMPLE_COLOR getIntakeColor() {
+        SAMPLE_COLOR color;
+
+        if (getIntakeFrontBlue() > getIntakeFrontRed()) {
+            color = SAMPLE_COLOR.BLUE;
+        }
+        else if (getIntakeFrontRed() > getIntakeFrontBlue()){
+           color = SAMPLE_COLOR.RED;
+        }
+        else{
+            color = SAMPLE_COLOR.UNKNOWN;
+        }
+
+        return color;
+    }
 //
 
     
 
-    public double getBackDistance() {
-        return backDistanceSensor.getDistance(DistanceUnit.CM);
-    }
-
+//    public double getBackDistance() {
+//        return backDistanceSensor.getDistance(DistanceUnit.CM);
+//    }
+//
 
 }

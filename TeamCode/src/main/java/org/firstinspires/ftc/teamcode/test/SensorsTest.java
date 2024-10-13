@@ -35,11 +35,12 @@ public class SensorsTest extends LinearOpMode {
 
         while (!isStopRequested()) {
             telemetry.addData("Argb", Sensors.getIntakeFrontArgb());
-//        telemetry.addData("distance", Sensors.getDistance(DistanceUnit.MM));
+            telemetry.addData("distance", Sensors.getDistanceColor());
             telemetry.addData("Red", Sensors.getIntakeFrontRed());
             telemetry.addData("Green", Sensors.getIntakeFrontGreen());
             telemetry.addData("Alpha", Sensors.getIntakeFrontAlpha());
             telemetry.addData("Blue", Sensors.getIntakeFrontBlue());
+            telemetry.addData("state", Sensors.getIntakeColor());
             telemetry.update();
         }
     }
