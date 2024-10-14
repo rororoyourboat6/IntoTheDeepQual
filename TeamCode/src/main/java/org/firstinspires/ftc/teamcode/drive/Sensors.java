@@ -56,21 +56,26 @@ public class Sensors {
     }
 
     public static double getDistanceColor(){
-        return intakeFrontDistance.getDistance(DistanceUnit.MM);
+        return intakeFrontDistance.getDistance(DistanceUnit.CM);
     }
 
 //jank but it distinguished blue and red! just not yellow or unknown buttttttttt
     public static SAMPLE_COLOR getIntakeColor() {
         SAMPLE_COLOR color;
 
-        if (getIntakeFrontBlue() > getIntakeFrontRed()) {
-            color = SAMPLE_COLOR.BLUE;
-        }
-        else if (getIntakeFrontRed() > getIntakeFrontBlue()){
-           color = SAMPLE_COLOR.RED;
+        if (getDistanceColor() > 5){
+            color = SAMPLE_COLOR.UNKNOWN;
         }
         else{
-            color = SAMPLE_COLOR.UNKNOWN;
+            if (getIntakeFrontBlue() > getIntakeFrontRed()) {
+                color = SAMPLE_COLOR.BLUE;
+            }
+            else if (getIntakeFrontRed() > getIntakeFrontBlue()){
+                color = SAMPLE_COLOR.RED;
+            }
+            else{
+                color = SAMPLE_COLOR.UNKNOWN;
+            }
         }
 
         return color;
