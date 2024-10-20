@@ -3,179 +3,111 @@ package org.firstinspires.ftc.teamcode.drive;
 import static java.lang.Thread.sleep;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-
-
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.util.Subsystem;
 
 import java.util.concurrent.TimeUnit;
 
 @Config
-//TODO:
-public class Intake {
+public class Intake extends Subsystem {
 
     /** Hardware/Constants */
-    private DcMotorEx intake;
-    private Servo rightRotate, leftRotate;
-    private Sensors sensor;
+    private Servo armLeft, armRight, linkageLeft, linkageRight, tubing;
+    public static double armLeftInitPos = 0, armLeftTransferPos = 0, armLeftIntakePos = 0;
+    public static double armRightInitPos = 0, armRightTransferPos = 0, armRightIntakePos = 0;
+    public static double linkageLeftInitPos = 0, linkageLeftExtendPos = 0, linkageLeftRetractPos = 0;
+    public static double  linkageRightInitPos = 0, linkageRightExtendPos = 0, linkageRightRetractPos = 0;
 
-    public static double collectPow = 0.8, spitOutPow = -1, alignPow = 0.4;
-    public static double rotateRightUpPos = 0.6, rotateLeftUpPos = 0.32;
-    public static double rotateRightDownPos = 0.05, rotateLeftDownPos = 0.87;
-    public static double pixel5PosRight = 0.21; public static double pixel5PosLeft = 0.69;
-    public static double pixel4PosRight = 0.17; public static double pixel4PosLeft = 0.74;
-    public static double pixel3PosRight = 0.13; public static double pixel3PosLeft = 0.78;
-    public static double pixel2PosRight = 0.09; public static double pixel2PosLeft = 0.82;
-    public static double pixel1PosRight = 0.04; public static double pixel1PosLeft = 0.87;
-    public static double rotateRightIntakeMovingPos = 0.5; public static double rotateLeftIntakeMovingPos = 0.42;
+    public enum ArmPos {
+        INIT,
+        INTAKE,
+        TRANSFER
+    }
 
-    public static double pursuitDistance = 5;
-    public static double backUpDist = 16, backUpDist2 = 15;
-    public static double closeUpDist = 12.3;
-    public static double closeUpDist2 = 12;
-    public static double closeUpDist3 = 12;
-    public static double wiggleFront = 18;
-    public static double intakePursuitPow = 0.2;
-    public static double armDropTime = 0.35;
-    public static double stackWaitTime = 0.3;
+    public enum LinkagePos {
+        INIT,
+        EXTEND,
+        RETRACT
+    }
+    public enum TubingDirection {
+        IN,
+        OUT,
+        REST
+    }
 
     public Intake(HardwareMap hardwareMap, Sensors sensor) {
-        intake = hardwareMap.get(DcMotorEx.class, "intake");
-        rightRotate = hardwareMap.get(Servo.class, "intakeRightRotate");
-        leftRotate = hardwareMap.get(Servo.class, "intakeLeftRotate");
-
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        this.sensor = sensor;
+        armLeft = hardwareMap.get(Servo.class, "armLeft");
+        armRight = hardwareMap.get(Servo.class, "armRight");
+        linkageLeft = hardwareMap.get(Servo.class, "linkageLeft");
+        linkageRight = hardwareMap.get(Servo.class, "linkageRight");
+        tubing = hardwareMap.get(Servo.class, "tubing");
     }
 
+    /** Base Functions */
+    @Override
+    public void init() {
+        setArm(ArmPos.INIT);
+        setLinkage(LinkagePos.INIT);
 
+    }
 
+    public void stop() {
+    }
 
     /** Mechanism Functions */
-//    public void collectTopPixelsAuto(Babaji babaji) throws InterruptedException {
-//        babaji.setMotorPowers(0.0, 0.0, 0.0, 0.0);
-//        ElapsedTime timer = new ElapsedTime();
-//        setPow(collectPow);
-//        intakePixel5();
-//        timer.reset();
-//        while (!sensor.intakeBackHasPixel()) {
-//            if (timer.time(TimeUnit.SECONDS) > 2.5) {
-//                break;
-//            }
-//        }
-//        sleep(1000);
-//        intakePixel4();
-//        timer.reset();
-//        while (!sensor.intakeFrontHasPixel()) {
-//            if (timer.time(TimeUnit.SECONDS) > 2.5) {
-//                intakePixel3();
-//            } else if (timer.time(TimeUnit.SECONDS) > 5) {
-//                break;
-//            }
-//        }
-//        sleep(1000);
-//        setPow(0);
-//    }
 
-    public void incrementRotate(double increment) {
-        rightRotate.setPosition(rotateRightUpPos + increment);
-        leftRotate.setPosition(rotateLeftUpPos - increment);
+    public void setArm(ArmPos pos) {
+        switch (pos) {
+            case INIT:
+                armLeft.setPosition(armLeftInitPos);
+                armRight.setPosition(armRightInitPos);
+                break;
+            case INTAKE:
+                armLeft.setPosition(armLeftIntakePos);
+                armRight.setPosition(armRightIntakePos);
+                break;
+            case TRANSFER:
+                armLeft.setPosition(armLeftTransferPos);
+                armRight.setPosition(armRightTransferPos);
+                break;
+        }
     }
 
-//    public void collectPixels() throws InterruptedException {
-//        ElapsedTime timer = new ElapsedTime();
-//        boolean cont = true;
-//        setPow(collectPow);
-//        intakePixel1();
-//        while (!sensor.intakeBackHasPixel()) {
-//            if (timer.time(TimeUnit.SECONDS) > 2) {
-//                setPow(0);
-//                cont = false;
-//                break;
-//            }
-//        }
-//        sleep(1000);
-//        timer.reset();
-//        if (cont) {
-//            while (!sensor.intakeFrontHasPixel()) {
-//                if (timer.time(TimeUnit.SECONDS) > 2) {
-//                    setPow(0);
-//                    break;
-//                }
-//            }
-//        }
-////        setPow(collectPow * 1.2);
-////        sleep(1000);
-//        setPow(0);
-//    }
-//
-////    public void collectPixels() throws InterruptedException {
-////        boolean hasTwoPixels = false;
-////
-////        setPow(collectPow);
-////        while (!hasTwoPixels) {
-////            if (sensor.intakeBackHasPixel()) {
-////                sleep(500);
-////                setPow(collectPow * 0.75);
-////                if (sensor.intakeFrontHasPixel()) {
-////                    hasTwoPixels = true;
-////                }
-////            } else {
-////                hasTwoPixels = false;
-////            }
-////        }
-////        setPow(collectPow * 0.5);
-////        sleep(500);
-////        setPow(spitOutPow);
-////        sleep(1000);
-////        setPow(0);
-////    }
-
-    public void setPow(double pow) {
-        intake.setPower(pow);
+    public void setLinkage(LinkagePos pos) {
+        switch (pos) {
+            case INIT:
+                linkageLeft.setPosition(linkageLeftInitPos);
+                linkageRight.setPosition(linkageRightInitPos);
+                break;
+            case EXTEND:
+                linkageLeft.setPosition(linkageLeftExtendPos);
+                linkageRight.setPosition(linkageRightExtendPos);
+                break;
+            case RETRACT:
+                linkageLeft.setPosition(linkageLeftRetractPos);
+                linkageRight.setPosition(linkageRightRetractPos);
+                break;
+        }
     }
-
-    public void raiseIntake() {
-        rightRotate.setPosition(rotateRightUpPos);
-        leftRotate.setPosition(rotateLeftUpPos);
-    }
-
-    public void raiseIntakeMoving() {
-        rightRotate.setPosition(rotateRightIntakeMovingPos);
-        leftRotate.setPosition(rotateLeftIntakeMovingPos);
-    }
-
-    public void intakePixel5() {
-        rightRotate.setPosition(pixel5PosRight);
-        leftRotate.setPosition(pixel5PosLeft);
-    }
-
-    public void intakePixel4() {
-        rightRotate.setPosition(pixel4PosRight);
-        leftRotate.setPosition(pixel4PosLeft);
-    }
-
-    public void intakePixel3() {
-        rightRotate.setPosition(pixel3PosRight);
-        leftRotate.setPosition(pixel3PosLeft);
-    }
-
-    public void intakePixel2() {
-        rightRotate.setPosition(pixel2PosRight);
-        leftRotate.setPosition(pixel2PosLeft);
-    }
-
-    public void intakePixel1() {
-        rightRotate.setPosition(pixel1PosRight);
-        leftRotate.setPosition(pixel1PosLeft);
-    }
-
-    public void lowerIntake() {
-        rightRotate.setPosition(rotateRightDownPos);
-        leftRotate.setPosition(rotateLeftDownPos);
+    // TODO: I do not know how to use continuous  servos
+    public void setTubingDirection(TubingDirection pos) {
+        switch (pos) {
+            case IN:
+//                tubing.setPosition();
+                break;
+            case OUT:
+//                specimenClaw.setPosition(specimenClawIntakePos);
+                break;
+            case REST:
+//                specimenClaw.setPosition(specimenClawOuttakePos);
+                break;
+        }
     }
 }
