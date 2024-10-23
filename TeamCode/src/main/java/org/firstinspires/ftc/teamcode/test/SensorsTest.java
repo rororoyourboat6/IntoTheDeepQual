@@ -41,6 +41,7 @@ public class SensorsTest extends LinearOpMode {
             telemetry.addData("Alpha", Sensors.getIntakeFrontAlpha());
             telemetry.addData("Blue", Sensors.getIntakeFrontBlue());
             telemetry.addData("state", Sensors.getIntakeColor());
+
             telemetry.update();
         }
     }

@@ -60,6 +60,10 @@ import org.firstinspires.ftc.teamcode.messages.PoseMessage;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.firstinspires.ftc.teamcode.drive.Outtake;
+import org.firstinspires.ftc.teamcode.drive.Intake;
+import org.firstinspires.ftc.teamcode.drive.Sensors;
+
 
 @Config
 public final class Usha {
@@ -371,6 +375,21 @@ public final class Usha {
             return true;
         }
 
+        public void stop() {
+            intake.stop();
+            outtake.stop();
+        }
+
+
+        public void init() {
+            // initializes to up pose
+            intake.init();
+            // initializes to shield pose
+            outtake.init();
+            // lock pose
+            sensors.init();
+        }
+
         @Override
         public void preview(Canvas c) {
             c.setStroke("#4CAF507A");
@@ -457,6 +476,7 @@ public final class Usha {
             c.fillCircle(turn.beginPose.position.x, turn.beginPose.position.y, 2);
         }
     }
+
 
     public PoseVelocity2d updatePoseEstimate() {
         Twist2dDual<Time> twist = localizer.update();

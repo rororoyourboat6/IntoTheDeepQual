@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 
 @Config
 public class Intake extends Subsystem {
+// TODO: don't know if this is correct
+    private DcMotorEx intake;
+
 
     /** Hardware/Constants */
     private Servo armLeft, armRight, linkageLeft, linkageRight, tubing;
@@ -40,6 +43,10 @@ public class Intake extends Subsystem {
         IN,
         OUT,
         REST
+    }
+
+    public void setPow(double pow) {
+        intake.setPower(pow);
     }
 
     public Intake(HardwareMap hardwareMap, Sensors sensor) {
